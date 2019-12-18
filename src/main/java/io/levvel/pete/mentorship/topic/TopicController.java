@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class TopicController implements TopicApi {
@@ -24,10 +23,7 @@ public class TopicController implements TopicApi {
 
     @Override
     public ResponseEntity<List<Topic>> topicGet() {
-        List<TopicEntity> topicEntities = topicService.getAllTopics();
-        List<Topic> topics = ConvertToApiModel(topicEntities);
-
-        return new ResponseEntity<>(topics, HttpStatus.OK);
+        return new ResponseEntity<>(topicService.getAllTopics(), HttpStatus.OK);
     }
 
     @Override
@@ -43,42 +39,25 @@ public class TopicController implements TopicApi {
 
     @Override
     public ResponseEntity<Topic> topicIdGet(Integer id) {
-        TopicEntity topic = topicService.getTopicById(id);
+        Topic topic = topicService.getTopicById(id);
         if (topic == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<>(ConvertToApiModel(topic), HttpStatus.OK);
+        return new ResponseEntity<>(topic, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Void> topicIdPut(Integer id, @Valid Topic topic) {
-        TopicEntity topicEntity = topicService.getTopicById(id);
-        if (topicEntity == null)
+        if (topicService.getTopicById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        topicEntity.setName(topic.getName());
-        topicService.saveOrUpdate(topicEntity);
+        topicService.update(id, topic);
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     @Override
     public ResponseEntity<Integer> topicPost(@Valid @RequestBody Topic topic) {
-        TopicEntity newTopic = new TopicEntity();
-        newTopic.setName(topic.getName());
-        topicService.saveOrUpdate(newTopic);
-        return new ResponseEntity<>(newTopic.getId(), HttpStatus.OK);
-    }
-
-    public Topic ConvertToApiModel(TopicEntity entity) {
-        Topic topic = new Topic(){{
-            setId(entity.getId());
-            setName(entity.getName());
-        }};
-        return topic;
-    }
-
-    public List<Topic> ConvertToApiModel(List<TopicEntity> entities) {
-        return entities.stream().map(this::ConvertToApiModel).collect(Collectors.toList());
+        Integer id = topicService.save(topic);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

@@ -1,10 +1,12 @@
 package io.levvel.pete.mentorship.topic;
 
+import io.swagger.model.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TopicService {
@@ -15,21 +17,42 @@ public class TopicService {
         this.repository = repository;
     }
 
-    public List<TopicEntity> getAllTopics() {
-        List<TopicEntity> topics = new ArrayList<>();
-        repository.findAll().forEach(emp -> topics.add(emp));
-        return topics;
+    public List<Topic> getAllTopics() {
+        return ConvertToApiModel(repository.findAll());
     }
 
-    public TopicEntity getTopicById(int id) {
-        return repository.findById(id).get();
+    public Topic getTopicById(int id) {
+        Optional<TopicEntity> entity = repository.findById(id);
+        return entity.isPresent() ? ConvertToApiModel(entity.get()) : null;
     }
 
-    public void saveOrUpdate(TopicEntity topic) {
-        repository.save(topic);
+    public Integer save(Topic topic) {
+        TopicEntity entity = new TopicEntity();
+        entity.setName(topic.getName());
+        entity = repository.save(entity);
+        return entity.getId();
+    }
+
+    public void update(Integer id, Topic topic) {
+        TopicEntity existing = repository.getOne(id);
+        if (existing != null)        {
+            existing.setName(topic.getName());
+            repository.save(existing);
+        }
     }
 
     public void delete(int id) {
         repository.deleteById(id);
+    }
+
+    public Topic ConvertToApiModel(TopicEntity entity) {
+        Topic topic = new Topic();
+        topic.setId(entity.getId());
+        topic.setName(entity.getName());
+        return topic;
+    }
+
+    public List<Topic> ConvertToApiModel(List<TopicEntity> entities) {
+        return entities.stream().map(this::ConvertToApiModel).collect(Collectors.toList());
     }
 }
