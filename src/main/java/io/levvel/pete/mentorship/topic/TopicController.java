@@ -1,4 +1,4 @@
-package io.levvel.pete.mentorship;
+package io.levvel.pete.mentorship.topic;
 
 import io.swagger.api.TopicApi;
 import io.swagger.model.Employee;
@@ -6,8 +6,6 @@ import io.swagger.model.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,11 +15,14 @@ import java.util.stream.Collectors;
 
 @RestController
 public class TopicController implements TopicApi {
-    @Autowired
     TopicService topicService;
 
+    @Autowired
+    public TopicController (TopicService topicService) {
+        this.topicService = topicService;
+    }
+
     @Override
-    @GetMapping("/topic")
     public ResponseEntity<List<Topic>> topicGet() {
         List<TopicEntity> topicEntities = topicService.getAllTopics();
         List<Topic> topics = ConvertToApiModel(topicEntities);
@@ -62,7 +63,6 @@ public class TopicController implements TopicApi {
     }
 
     @Override
-    @PostMapping("/topic")
     public ResponseEntity<Integer> topicPost(@Valid @RequestBody Topic topic) {
         TopicEntity newTopic = new TopicEntity();
         newTopic.setName(topic.getName());

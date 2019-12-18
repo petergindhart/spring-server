@@ -1,4 +1,4 @@
-package io.levvel.pete.mentorship;
+package io.levvel.pete.mentorship.topic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,24 +8,28 @@ import java.util.List;
 
 @Service
 public class TopicService {
+    TopicRepository repository;
+
     @Autowired
-    TopicRepository topicRepository;
+    public TopicService(TopicRepository repository) {
+        this.repository = repository;
+    }
 
     public List<TopicEntity> getAllTopics() {
         List<TopicEntity> topics = new ArrayList<>();
-        topicRepository.findAll().forEach(emp -> topics.add(emp));
+        repository.findAll().forEach(emp -> topics.add(emp));
         return topics;
     }
 
     public TopicEntity getTopicById(int id) {
-        return topicRepository.findById(id).get();
+        return repository.findById(id).get();
     }
 
     public void saveOrUpdate(TopicEntity topic) {
-        topicRepository.save(topic);
+        repository.save(topic);
     }
 
     public void delete(int id) {
-        topicRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }
