@@ -18,7 +18,7 @@ public class TopicService {
     }
 
     public TopicEntity getTopicById(int id) {
-        return topicRepository.getOne(id);
+        return topicRepository.findById(id).get();
     }
 
     public void saveOrUpdate(TopicEntity topic) {

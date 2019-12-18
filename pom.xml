@@ -8,10 +8,10 @@
 		<version>2.2.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>io.levvel</groupId>
-	<artifactId>pete.mentorship</artifactId>
+	<groupId>io.levvel.pete.mentorship</groupId>
+	<artifactId>spring-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pete.mentorship</name>
+	<name>spring-server</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -20,8 +20,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-spring</artifactId>
+			<groupId>io.levvel.pete.mentorship</groupId>
+			<artifactId>swagger-interfaces</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

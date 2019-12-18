@@ -26,11 +26,6 @@ public class TopicController implements TopicApi {
         List<TopicEntity> topicEntities = topicService.getAllTopics();
         List<Topic> topics = ConvertToApiModel(topicEntities);
 
-//        TopicEntity newTopic = new TopicEntity(){{
-//            setName("newguy");
-//        }};
-//        topicService.saveOrUpdate(newTopic);
-
         return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
@@ -69,11 +64,10 @@ public class TopicController implements TopicApi {
     @Override
     @PostMapping("/topic")
     public ResponseEntity<Integer> topicPost(@Valid @RequestBody Topic topic) {
-        TopicEntity entity = new TopicEntity(){{
-            setName(topic.getName());
-        }};
-        topicService.saveOrUpdate(entity);
-        return new ResponseEntity<>(entity.getId(), HttpStatus.OK);
+        TopicEntity newTopic = new TopicEntity();
+        newTopic.setName(topic.getName());
+        topicService.saveOrUpdate(newTopic);
+        return new ResponseEntity<>(newTopic.getId(), HttpStatus.OK);
     }
 
     public Topic ConvertToApiModel(TopicEntity entity) {
