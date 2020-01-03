@@ -29,42 +29,80 @@ public class EmployeeController implements EmployeeApi {
     }
 
     @Override
-    public ResponseEntity<Void> employeeIdChangeManagerPost(Integer integer, @NotNull @Valid Integer integer1) {
-        return null;
+    public ResponseEntity<Void> employeeIdChangeManagerPost(Integer employeeId, @NotNull @Valid Integer newManagerId) {
+        Employee existing = employeeService.getEmployeeById(employeeId);
+        if (existing == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        existing.setManagerId(newManagerId);
+        employeeService.update(employeeId, existing);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> employeeIdDelete(Integer integer, @Valid Integer integer1) {
-        return null;
+    public ResponseEntity<Void> employeeIdDelete(Integer employeeId, @Valid Integer reassignId) {
+        Employee existing = employeeService.getEmployeeById(employeeId);
+        if (existing == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        employeeService.delete(existing.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<List<Employee>> employeeIdDirectReportsGet(Integer integer) {
-        return null;
+    public ResponseEntity<List<Employee>> employeeIdDirectReportsGet(Integer managerId) {
+        Employee manager = employeeService.getEmployeeById(managerId);
+        if (manager == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<Employee> reports = employeeService.getEmployeesByManagerId(managerId);
+        return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Employee> employeeIdGet(Integer integer) {
-        return null;
+    public ResponseEntity<Employee> employeeIdGet(Integer id) {
+        Employee employee = employeeService.getEmployeeById(id);
+        if (employee == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> employeeIdInterestsDelete(Integer integer, @NotNull @Valid Integer integer1) {
-        return null;
+    public ResponseEntity<Void> employeeIdInterestsDelete(Integer employeeId, @NotNull @Valid Integer topicId) {
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Override
-    public ResponseEntity<List<Topic>> employeeIdInterestsGet(Integer integer) {
-        return null;
+    public ResponseEntity<List<Topic>> employeeIdInterestsGet(Integer employeeId) {
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<Void> employeeIdInterestsPost(Integer integer, @NotNull @Valid Integer integer1) {
-        return null;
+    public ResponseEntity<Void> employeeIdInterestsPost(Integer employeeId, @NotNull @Valid Integer topicId) {
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<List<Pet>> employeeIdPetsGet(Integer integer) {
-        return null;
+    public ResponseEntity<List<Pet>> employeeIdPetsGet(Integer employeeId) {
+
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        if (employee == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }
