@@ -1,10 +1,16 @@
 package io.levvel.pete.mentorship.employee;
 
+import io.levvel.pete.mentorship.topic.TopicEntity;
+import io.levvel.pete.mentorship.topic.TopicRepository;
+import io.levvel.pete.mentorship.topic.TopicService;
 import io.swagger.model.Employee;
+import io.swagger.model.Pet;
+import io.swagger.model.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.threeten.bp.DateTimeUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -12,43 +18,70 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
-    EmployeeRepository repository;
+    EmployeeRepository employeeRepo;
+    TopicRepository topicRepo;
 
     @Autowired
-    public EmployeeService(EmployeeRepository repository) {
-        this.repository = repository;
+    public EmployeeService(EmployeeRepository employeeRepo, TopicRepository topicRepo) {
+        this.employeeRepo = employeeRepo;
+        this.topicRepo = topicRepo;
     }
 
     public List<Employee> getAll() {
-        List<EmployeeEntity> entities = repository.findAll();
+        List<EmployeeEntity> entities = employeeRepo.findAll();
         return ConvertToApiModel(entities);
     }
 
     public Employee getEmployeeById(Integer employeeId) {
-        Optional<EmployeeEntity> entity = repository.findById(employeeId);
+        Optional<EmployeeEntity> entity = employeeRepo.findById(employeeId);
         return entity.isPresent() ? ConvertToApiModel(entity.get()) : null;
     }
 
     public List<Employee> getEmployeesByManagerId(Integer managerId) {
-        Optional<EmployeeEntity> manager = repository.findById(managerId);
-        return manager != null ? ConvertToApiModel(repository.findByManager(manager.get())) : null;
+        return ConvertToApiModel(employeeRepo.findByManager_Id(managerId));
     }
 
     public void update(Integer id, Employee employee) {
-        EmployeeEntity existing = repository.getOne(id);
-        EmployeeEntity manager = repository.getOne(employee.getManagerId());
+        EmployeeEntity existing = employeeRepo.getOne(id);
+        EmployeeEntity manager = employeeRepo.getOne(employee.getManagerId());
         if (existing != null)        {
             existing.setName(employee.getName());
             existing.setManager(manager);
-            repository.save(existing);
+            employeeRepo.save(existing);
         }
     }
 
     public void delete(int id) {
-        repository.deleteById(id);
+        employeeRepo.deleteById(id);
     }
 
-    public Employee ConvertToApiModel(EmployeeEntity entity) {
+    public List<Topic> getInterests(Integer employeeId) {
+        List<TopicEntity> topics = new ArrayList<>(employeeRepo.getOne(employeeId)
+                .getInterests());
+        return TopicService.ConvertToApiModel(topics);
+    }
+
+    public void removeInterest(Integer employeeId, Integer topicId) {
+        EmployeeEntity employee = employeeRepo.getOne(employeeId);
+        employee.getInterests().removeIf(i -> i.getId() == topicId);
+        employeeRepo.save(employee);
+    }
+
+    public void addInterest(Integer employeeId, Integer topicId) {
+        EmployeeEntity employee = employeeRepo.getOne(employeeId);
+        TopicEntity topic = topicRepo.getOne(topicId);
+        employee.getInterests().remove(topic);
+        employee.getInterests().add(topic);
+        employeeRepo.save(employee);
+    }
+
+    public List<Pet> getPets(Integer employeeId) {
+        EmployeeEntity employee = employeeRepo.getOne(employeeId);
+        // TODO: pet service convert to API model
+        return null;
+    }
+
+    public static Employee ConvertToApiModel(EmployeeEntity entity) {
         Employee employee = new Employee();
         employee.setId(entity.getId());
         employee.setName(entity.getName());
@@ -74,7 +107,7 @@ public class EmployeeService {
         return employee;
     }
 
-    public List<Employee> ConvertToApiModel(List<EmployeeEntity> entities) {
-        return entities.stream().map(this::ConvertToApiModel).collect(Collectors.toList());
+    public static List<Employee> ConvertToApiModel(List<EmployeeEntity> entities) {
+        return entities.stream().map(EmployeeService::ConvertToApiModel).collect(Collectors.toList());
     }
 }

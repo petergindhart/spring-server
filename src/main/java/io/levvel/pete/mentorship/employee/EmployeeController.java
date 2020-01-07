@@ -1,5 +1,6 @@
 package io.levvel.pete.mentorship.employee;
 
+import io.levvel.pete.mentorship.topic.TopicService;
 import io.swagger.api.EmployeeApi;
 import io.swagger.model.Employee;
 import io.swagger.model.Pet;
@@ -16,10 +17,12 @@ import java.util.List;
 @RestController
 public class EmployeeController implements EmployeeApi {
     EmployeeService employeeService;
+    TopicService topicService;
 
     @Autowired
-    public EmployeeController (EmployeeService employeeService) {
+    public EmployeeController (EmployeeService employeeService, TopicService topicService) {
         this.employeeService = employeeService;
+        this.topicService = topicService;
     }
 
     @Override
@@ -70,8 +73,8 @@ public class EmployeeController implements EmployeeApi {
         if (employee == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        employeeService.removeInterest(employeeId, topicId);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
@@ -81,8 +84,9 @@ public class EmployeeController implements EmployeeApi {
         if (employee == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        List<Topic> topics = employeeService.getInterests(employeeId);
 
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(topics, HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
@@ -91,8 +95,12 @@ public class EmployeeController implements EmployeeApi {
         if (employee == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        Topic topic = topicService.getTopicById(topicId);
+        if (topic == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        employeeService.addInterest(employeeId, topicId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
@@ -102,7 +110,7 @@ public class EmployeeController implements EmployeeApi {
         if (employee == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        List<Pet> pets = employeeService.getPets(employeeId);
+        return new ResponseEntity<>(pets, HttpStatus.NOT_IMPLEMENTED);
     }
 }

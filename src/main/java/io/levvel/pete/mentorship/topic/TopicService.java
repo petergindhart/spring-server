@@ -45,14 +45,14 @@ public class TopicService {
         repository.deleteById(id);
     }
 
-    public Topic ConvertToApiModel(TopicEntity entity) {
+    public static Topic ConvertToApiModel(TopicEntity entity) {
         Topic topic = new Topic();
         topic.setId(entity.getId());
         topic.setName(entity.getName());
         return topic;
     }
 
-    public List<Topic> ConvertToApiModel(List<TopicEntity> entities) {
-        return entities.stream().map(this::ConvertToApiModel).collect(Collectors.toList());
+    public static List<Topic> ConvertToApiModel(List<TopicEntity> entities) {
+        return entities.stream().map(TopicService::ConvertToApiModel).collect(Collectors.toList());
     }
 }
