@@ -4,7 +4,6 @@ import io.levvel.pete.mentorship.topic.TopicEntity;
 import io.levvel.pete.mentorship.topic.TopicRepository;
 import io.levvel.pete.mentorship.topic.TopicService;
 import io.swagger.model.Employee;
-import io.swagger.model.Pet;
 import io.swagger.model.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,12 +72,6 @@ public class EmployeeService {
         employee.getInterests().remove(topic);
         employee.getInterests().add(topic);
         employeeRepo.save(employee);
-    }
-
-    public List<Pet> getPets(Integer employeeId) {
-        EmployeeEntity employee = employeeRepo.getOne(employeeId);
-        // TODO: pet service convert to API model
-        return null;
     }
 
     public static Employee ConvertToApiModel(EmployeeEntity entity) {

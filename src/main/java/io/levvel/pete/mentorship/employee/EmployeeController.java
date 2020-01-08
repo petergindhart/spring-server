@@ -1,5 +1,6 @@
 package io.levvel.pete.mentorship.employee;
 
+import io.levvel.pete.mentorship.pet.PetService;
 import io.levvel.pete.mentorship.topic.TopicService;
 import io.swagger.api.EmployeeApi;
 import io.swagger.model.Employee;
@@ -18,11 +19,13 @@ import java.util.List;
 public class EmployeeController implements EmployeeApi {
     EmployeeService employeeService;
     TopicService topicService;
+    PetService petService;
 
     @Autowired
-    public EmployeeController (EmployeeService employeeService, TopicService topicService) {
+    public EmployeeController (EmployeeService employeeService, TopicService topicService, PetService petService) {
         this.employeeService = employeeService;
         this.topicService = topicService;
+        this.petService = petService;
     }
 
     @Override
@@ -86,7 +89,7 @@ public class EmployeeController implements EmployeeApi {
 
         List<Topic> topics = employeeService.getInterests(employeeId);
 
-        return new ResponseEntity<>(topics, HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
     @Override
@@ -110,7 +113,7 @@ public class EmployeeController implements EmployeeApi {
         if (employee == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<Pet> pets = employeeService.getPets(employeeId);
-        return new ResponseEntity<>(pets, HttpStatus.NOT_IMPLEMENTED);
+        List<Pet> pets = petService.getPetsByOwnerId(employeeId);
+        return new ResponseEntity<>(pets, HttpStatus.OK);
     }
 }
