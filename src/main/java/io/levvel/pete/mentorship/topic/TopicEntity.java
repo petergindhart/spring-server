@@ -15,8 +15,6 @@ public class TopicEntity {
 
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "employee_topic", joinColumns = @JoinColumn(name = "topic_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "interests")
     private Set<EmployeeEntity> enthusiasts;
 }

@@ -27,6 +27,26 @@ public class EmployeeEntity {
     @JoinColumn
     private EmployeeEntity manager;
 
-    @ManyToMany(mappedBy = "enthusiasts")
+    @ManyToMany
+    @JoinTable(name = "employee_topic", joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "topic_id", referencedColumnName = "id"))
     private Set<TopicEntity> interests;
+
+
+    @Override
+    public int hashCode() {
+        return 13;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        EmployeeEntity other = (EmployeeEntity) obj;
+        return id != null && id.equals(other.getId());
+    }
 }
