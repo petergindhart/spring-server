@@ -1,9 +1,13 @@
 package io.levvel.pete.mentorship.topic;
 
+import io.levvel.pete.mentorship.employee.EmployeeEntity;
+import io.levvel.pete.mentorship.employee.EmployeeService;
+import io.swagger.model.Employee;
 import io.swagger.model.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,6 +47,12 @@ public class TopicService {
 
     public void delete(int id) {
         repository.deleteById(id);
+    }
+
+    public List<Employee> getEnthusiasts(Integer topicId) {
+        List<EmployeeEntity> employees = new ArrayList<>(repository.getOne(topicId)
+                .getEnthusiasts());
+        return EmployeeService.ConvertToApiModel(employees);
     }
 
     public static Topic ConvertToApiModel(TopicEntity entity) {

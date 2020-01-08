@@ -34,7 +34,12 @@ public class TopicController implements TopicApi {
 
     @Override
     public ResponseEntity<List<Employee>> topicIdEnthusiastsGet(Integer id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        Topic topic = topicService.getTopicById(id);
+        if (topic == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<Employee> employees = topicService.getEnthusiasts(id);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @Override
